@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { RawQlResponse } from "raw_lib";
 import MediaEntity from "../../media/domain/entities/media.entity";
+import UserEntity from "../../../domain/entities/user.entity";
 
 declare global {
   namespace Express {
@@ -11,7 +12,7 @@ declare global {
 
     interface Request {
       token: string;
-      // Create your UserEntity and call here user: UserEntity,
+      user: UserEntity,
       uploadedMedia: MediaEntity;
       uploadedMedias: MediaEntity[];
     }

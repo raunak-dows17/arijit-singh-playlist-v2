@@ -1,5 +1,7 @@
 import express from "express";
 import apiResponse from "../../shared/infrastructure/middleware/api_response.js";
+import authRouter from "../../application/routes/auth.routes.js";
+import userRoutes from "../../application/routes/user.routes.js";
 
 const app = express();
 
@@ -13,6 +15,9 @@ app.get("/", (req, res) => {
     data: null,
   });
 });
+
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/user", userRoutes);
 
 app.use((req, res, next) => {
   res.error({

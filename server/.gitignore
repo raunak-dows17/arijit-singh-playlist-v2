@@ -15,6 +15,7 @@
 
 # next.js
 /dist/
+/uploads/
 
 # production
 /build
