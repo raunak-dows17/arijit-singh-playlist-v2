@@ -1,9 +1,6 @@
 import multer from "multer";
-import path from "path";
 import { Request } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { existsSync } from "node:fs";
-import { mkdirSync } from "fs";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { v2 as cloudinary } from "cloudinary";
 import envConfig from "./env.config";
@@ -21,9 +18,9 @@ const storage = (folder: string) =>
     params: {
       folder,
       public_id: (req: Request, file: Express.Multer.File) => {
-        // Generate unique filename with original extension
         return uuidv4();
       },
+      resource_type: "auto",
     },
   });
 
@@ -31,7 +28,16 @@ const storage = (folder: string) =>
 const upload = (folder: string) =>
   multer({
     storage: storage(folder),
-    // fileFilter: fileFilter,
+    fileFilter: (req, file, cb: multer.FileFilterCallback) => {
+      if (
+        !file.mimetype.startsWith("audio/") &&
+        !file.mimetype.startsWith("image/")
+      ) {
+        // @ts-ignore
+        return cb(new Error("Invalid file type"), false);
+      }
+      cb(null, true);
+    },
     limits: {
       fileSize: 20 * 1024 * 1024,
     },
