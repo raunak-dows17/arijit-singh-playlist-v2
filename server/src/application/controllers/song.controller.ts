@@ -84,17 +84,79 @@ class SongController {
               },
             },
             {
+              unwind: {
+                path: "coverImage",
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+          ],
+        })
+      );
+    } catch (error: any) {
+      return res.error({
+        status: false,
+        message: error.message || "Inernal Server Error",
+        data: null,
+      });
+    }
+  }
+
+  async getSong(req: Request, res: Response) {
+    try {
+      return res.success(
+        await this.getSongUsecase.call(req.body as RawQlRequest)
+      );
+    } catch (error: any) {
+      return res.error({
+        status: false,
+        message: error.message || "Inernal Server Error",
+        data: null,
+      });
+    }
+  }
+
+  async updateSong(req: Request, res: Response) {
+    try {
+      const { name, artists } = req.body;
+      const song = await this.updateSongUsecase.call({
+        name,
+        artists,
+        createdBy: req.user,
+      } as SongEntity);
+
+      req.body = {
+        ...req.body,
+        _id:
+          song.data?.type === "single"
+            ? song.data?.item._id
+            : song.data?.items[0]._id,
+      };
+      await mediaControllers.handleMediaSave(req, res);
+
+      return res.success(
+        await this.getSongUsecase.call({
+          entity: "Song",
+          type: "aggregate",
+          pipeline: [
+            {
+              match: {
+                field: "_id",
+                op: "eq",
+                value: req.body?._id,
+              },
+            },
+            {
               lookup: {
                 foreignField: "ref_id",
                 localField: "_id",
                 from: "media",
-                as: "song",
+                as: "coverImage",
                 pipeline: [
                   {
                     match: {
                       field: "ref_code",
                       op: "eq",
-                      value: "song",
+                      value: "song_cover",
                     },
                   },
                   {
@@ -116,28 +178,8 @@ class SongController {
                 preserveNullAndEmptyArrays: true,
               },
             },
-            {
-              unwind: {
-                path: "song",
-                preserveNullAndEmptyArrays: true,
-              },
-            },
           ],
         })
-      );
-    } catch (error: any) {
-      return res.error({
-        status: false,
-        message: error.message || "Inernal Server Error",
-        data: null,
-      });
-    }
-  }
-
-  async getSong(req: Request, res: Response) {
-    try {
-      return res.success(
-        await this.getSongUsecase.call(req.body as RawQlRequest)
       );
     } catch (error: any) {
       return res.error({

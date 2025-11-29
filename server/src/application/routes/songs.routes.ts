@@ -6,11 +6,23 @@ import upload from "../../config/multer.config";
 
 const songRoutes = Router();
 
-songRoutes.post("/create", authMiddleware, upload("songs").fields([
+songRoutes.post(
+  "/create",
+  authMiddleware,
+  upload("songs").fields([
     { name: "coverImage", maxCount: 1 },
-    { name: "song", maxCount: 1 }
-]), songController.createSong);
+    { name: "song", maxCount: 1 },
+  ]),
+  songController.createSong
+);
 
 songRoutes.post("/list", authMiddleware, songController.getSong);
+
+songRoutes.post(
+  "/update",
+  authMiddleware,
+  singleMediaMiddleware("coverImage", "songs"),
+  songController.updateSong
+);
 
 export default songRoutes;
