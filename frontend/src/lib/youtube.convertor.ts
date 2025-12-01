@@ -50,6 +50,7 @@ export default class YoutubeConvertor {
                 noCheckCertificate: true,
                 noWarnings: true,
                 noPlaylist: true,
+                ffmpegLocation: '/usr/bin/ffmpeg',
             });
 
             if (!existsSync(outputPath)) {

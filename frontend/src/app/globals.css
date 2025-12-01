@@ -203,3 +203,7 @@ body {
 * {
   transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
 }
+
+input[type="range"] {
+  transition: background 0.2s linear;
+}

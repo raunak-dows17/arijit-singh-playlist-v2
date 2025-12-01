@@ -20,7 +20,7 @@ interface PlaylistsState {
     setLoading: (loading: boolean) => void;
 }
 
-export const usePlaylistsStore = create<PlaylistsState>((set) => ({
+const usePlaylistsStore = create<PlaylistsState>((set) => ({
     playlists: [],
     currentPlaylist: null,
     loading: false,
@@ -59,3 +59,5 @@ export const usePlaylistsStore = create<PlaylistsState>((set) => ({
     setCurrentPlaylist: (playlist) => set({ currentPlaylist: playlist }),
     setLoading: (loading) => set({ loading: loading }),
 }));
+
+export default usePlaylistsStore;

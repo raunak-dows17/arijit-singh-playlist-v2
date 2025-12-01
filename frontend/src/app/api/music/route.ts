@@ -20,6 +20,13 @@ export async function GET(req: NextRequest) {
           as: "coverImage",
           pipeline: [
             {
+              match: {
+                field: "ref_code",
+                op: "eq",
+                value: "song_cover",
+              }
+            },
+            {
               project: {
                 path: 1,
                 local: 1,
@@ -28,6 +35,12 @@ export async function GET(req: NextRequest) {
             },
           ],
         },
+      },
+      {
+        unwind: {
+          path: "coverImage",
+          preserveNullAndEmptyArrays: true,
+        }
       },
       {
         limit: Number(searchParams.get("limit")) || 10,
@@ -75,6 +88,8 @@ export async function GET(req: NextRequest) {
         }),
       },
     };
+
+    return NextResponse.json(response);
   } catch (error: any) {
     return NextResponse.json({
       status: false,
@@ -120,11 +135,12 @@ export async function POST(req: NextRequest) {
 
     formData.append("song", audioFile);
 
+    ["song_cover", "song"].forEach(a => formData.append("ref_code", a))
+
     return NextResponse.json(
       await apiServer.post<SongEntity>(
         "/song/create",
         formData,
-        "multipart/form-data"
       )
     );
   } catch (error: any) {

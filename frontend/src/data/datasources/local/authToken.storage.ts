@@ -1,3 +1,5 @@
+"use client"
+
 import LocalStorage from "@/config/storage.config";
 
 class AuthTokenStorage {
