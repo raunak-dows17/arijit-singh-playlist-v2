@@ -75,7 +75,7 @@ export function Dialog({
 
             {/* Dialog */}
             <div
-                className={`relative z-50 w-full ${sizeClasses[size]} bg-card rounded-xl border ${typeColors[type]} shadow-2xl`}
+                className={`relative z-50 w-full ${sizeClasses[size]} max-h-3/5 overflow-auto bg-card rounded-xl border ${typeColors[type]} shadow-2xl`}
             >
                 {/* Header */}
                 {title && (
