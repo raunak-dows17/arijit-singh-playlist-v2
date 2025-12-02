@@ -1,3 +1,5 @@
+"use client"
+
 export default class LocalStorage {
     private readonly key: string;
 

@@ -5,7 +5,7 @@ export default interface SongEntity {
     _id?: string;
     name: string;
     artists: string[];
-    cover?: MediaEntity;
+    coverImage?: MediaEntity;
     song: MediaEntity | string;
     createdBy: UserEntity;
     createdAt: Date;

@@ -28,6 +28,8 @@ class SongController {
 
   async createSong(req: Request, res: Response) {
     try {
+      console.log(req.body, req, req.file, req.files);
+
       const { name, artists } = req.body;
       const song = await this.createSongUsecase.call({
         name,

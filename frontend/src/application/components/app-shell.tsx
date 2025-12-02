@@ -1,14 +1,19 @@
+// components/app-shell.tsx
 'use client';
 
 import { useTheme } from '@/lib/theme_provider';
 import { ThemeToggle } from './theme-toggle';
 import useAuthStore from '@/application/controllers/auth.controller';
-import { useRouter } from 'next/navigation';
+import AudioPlayerFooter from './songs/audio-footer';
+import { usePathname } from 'next/navigation';
+import Image from 'next/image';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
     const { theme } = useTheme();
     const { user, authenticated, logout } = useAuthStore();
-    const router = useRouter();
+    const pathname = usePathname();
+
+    const isAuthPage = pathname === '/auth/login' || pathname === '/auth/signup';
 
     return (
         <div className="min-h-screen bg-background text-foreground">
@@ -29,7 +34,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     <div className="container m-auto flex h-16 items-center justify-between px-4">
                         <div className="flex items-center gap-2">
                             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-linear-to-br from-music-primary to-music-accent">
-                                <MusicIcon className="h-4 w-4 text-primary-foreground" />
+                                <Image src={"/daa.png"} className='size-8 text-muted-foreground' width={32} height={32} alt='Daa - Your Music Sanctuary' />
                             </div>
                             <span className="text-xl font-bold gradient-text">
                                 Daa
@@ -37,16 +42,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         </div>
 
                         <nav className="flex items-center gap-4">
-                            {authenticated && user && (
+                            {authenticated && user && !isAuthPage && (
                                 <div className="flex items-center gap-3">
-                                    <span className="text-sm text-muted-foreground">
+                                    <span className="text-sm text-muted-foreground hidden sm:block">
                                         Welcome, {user.name || user.username}
                                     </span>
                                     <button
-                                        onClick={async () => {
-                                            await logout();
-                                            router.replace("/auth/login");
-                                        }}
+                                        onClick={logout}
                                         className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                                     >
                                         Logout
@@ -59,9 +61,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </header>
 
                 {/* Page content */}
-                <main className="container m-auto px-4 py-8">
+                <main className={`container m-auto px-4 ${isAuthPage ? 'py-8' : 'pb-32 pt-8'}`}>
                     {children}
                 </main>
+
+                {/* Audio Player Footer - Only show on authenticated non-auth pages */}
+                {authenticated && !isAuthPage && <AudioPlayerFooter />}
             </div>
         </div>
     );

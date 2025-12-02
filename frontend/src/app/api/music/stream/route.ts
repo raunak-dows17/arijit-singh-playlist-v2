@@ -7,7 +7,7 @@ import { RawQlRequest } from "raw_lib";
 
 export async function GET(req: NextRequest) {
   try {
-    const token = req.headers.get("Authorization");
+    const token = `Bearer ${req.cookies.get("TOKEN_NAME")?.value}`
     const apiServer = new ApiServer(token);
     const { searchParams } = new URL(req.url);
 
@@ -19,9 +19,18 @@ export async function GET(req: NextRequest) {
       entity: "Media",
       type: "get",
       filter: {
-        field: "ref_id",
-        op: "eq",
-        value: searchParams.get("id"),
+        and: [
+          {
+            field: "ref_id",
+            op: "eq",
+            value: searchParams.get("id"),
+          },
+          {
+            field: "ref_code",
+            op: "eq",
+            value: "song",
+          }
+        ]
       },
     } as RawQlRequest);
 
@@ -34,6 +43,7 @@ export async function GET(req: NextRequest) {
         ? `${envConfig.baseUrl}${response.data.item?.path}`
         : response.data.item?.path
     );
+
     if (!audioResponse.ok) {
       throw new Error("Failed to get the song for you");
     }
