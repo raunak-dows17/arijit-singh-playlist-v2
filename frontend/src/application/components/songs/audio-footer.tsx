@@ -47,11 +47,15 @@ export default function AudioPlayerFooter() {
         audio.addEventListener('timeupdate', updateTime);
         audio.addEventListener('loadedmetadata', updateDuration);
         audio.addEventListener('ended', handleEnded);
+        audio.addEventListener("pause", togglePlay);
+        audio.addEventListener("play", togglePlay);
 
         return () => {
             audio.removeEventListener('timeupdate', updateTime);
             audio.removeEventListener('loadedmetadata', updateDuration);
             audio.removeEventListener('ended', handleEnded);
+            audio.removeEventListener("pause", togglePlay);
+            audio.removeEventListener("play", togglePlay);
         };
     }, [setCurrentTime, setDuration, loop, playNext]);
 
@@ -59,12 +63,6 @@ export default function AudioPlayerFooter() {
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio || !currentPlaying) return;
-
-        if (playing) {
-            audio.play().catch(console.error);
-        } else {
-            audio.pause();
-        }
     }, [playing, currentPlaying]);
 
     // Update volume
@@ -147,7 +145,13 @@ export default function AudioPlayerFooter() {
                                 </button>
 
                                 <button
-                                    onClick={togglePlay}
+                                    onClick={() => {
+                                        if (audioRef.current?.paused) {
+                                            audioRef.current.play();
+                                        } else {
+                                            audioRef.current?.pause();
+                                        }
+                                    }}
                                     className="w-8 h-8 bg-foreground text-background rounded-full flex items-center justify-center hover:scale-105 transition-transform"
                                 >
                                     {playing ? (

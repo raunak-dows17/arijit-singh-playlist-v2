@@ -125,7 +125,7 @@ export function AddSongDialog({ open, onClose }: AddSongDialogProps) {
                             required
                         />
                         <p className="text-xs text-muted-foreground mt-1">
-                            Separate multiple artists with commas
+                            Paste The Youtube Urls only
                         </p>
                     </div>
                 </div>
