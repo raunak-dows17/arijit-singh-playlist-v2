@@ -2,12 +2,12 @@
   "name": "akshita-arijit-singh-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/server",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --loader ts-node/esm src/root/server.ts",
-    "dev": "tsc-watch --onSuccess \"node dist/server.js\"",
-    "build": "tsc"
+    "start": "node dist/server.js",
+    "dev": "tsx watch src/server.ts",
+    "build": "node ./node_modules/typescript/lib/tsc.js",
+    "clean": "rm -rf dist"
   },
   "keywords": [],
   "author": "",
@@ -23,10 +23,9 @@
     "mongoose": "^9.0.0",
     "multer": "^2.0.2",
     "multer-storage-cloudinary": "^4.0.0",
-    "raw_lib": "^1.2.8",
+    "raw_lib": "^1.2.9",
     "socket.io": "^4.8.1",
     "uuid": "^13.0.0",
-    "yt-dlp-exec": "^1.0.2",
     "zod": "^4.1.12"
   },
   "devDependencies": {

@@ -17,6 +17,7 @@
 /dist/
 /uploads/
 /.vscode/
+/venv/
 
 # production
 /build

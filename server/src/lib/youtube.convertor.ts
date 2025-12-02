@@ -1,8 +1,12 @@
+// lib/youtube.convertor.ts - SIMPLIFIED VERSION
 import { existsSync, mkdirSync, readFileSync, statSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 import { RawQlResponse } from "raw_lib";
-import { exec } from "yt-dlp-exec";
+import { exec } from "child_process";
+import { promisify } from "util";
+
+const execAsync = promisify(exec);
 
 export interface YouTubeConversionRequest {
     youtubeUrl: string;
@@ -47,16 +51,13 @@ export default class YoutubeConvertor {
             const filename = `song_${Date.now()}`;
             const outputPath = join(this.temptDir, `${filename}.mp3`);
 
-            await exec(youtubeUrl, {
-                extractAudio: true,
-                audioFormat: 'mp3',
-                audioQuality: 0,
-                output: outputPath,
-                noCheckCertificate: true,
-                noWarnings: true,
-                noPlaylist: true,
-                ffmpegLocation: '/usr/bin/ffmpeg',
-            });
+            console.log('Starting YouTube download...');
+
+            const command = `/opt/venv/bin/python -m yt_dlp --extract-audio --audio-format mp3 --audio-quality 0 --output "${outputPath}" "${youtubeUrl}"`;
+
+            console.log('Running command:', command);
+
+            await execAsync(command);
 
             if (!existsSync(outputPath)) {
                 throw new Error('Conversion failed, file not created');
@@ -84,13 +85,14 @@ export default class YoutubeConvertor {
                 }
             }
         } catch (error: any) {
+            console.error('YouTube conversion error:', error);
             return {
                 status: false,
                 data: {
                     type: "single",
                     item: {
                         audio: '',
-                        mimeType: 'audio/wav',
+                        mimeType: 'audio/mp3',
                     }
                 },
                 message: error.message || 'YouTube conversion failed',

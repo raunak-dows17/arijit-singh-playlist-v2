@@ -21,7 +21,7 @@ const storage = (folder: string) =>
         return uuidv4();
       },
       resource_type: "auto",
-    },
+    } as any,
   });
 
 // Configure multer
