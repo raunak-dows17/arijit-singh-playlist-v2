@@ -140,7 +140,8 @@ export async function POST(req: NextRequest) {
 
     formData.append("song", audioFile);
 
-    ["song_cover", "song"].forEach(a => formData.append("ref_code", a))
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    formData.get("coverImage") ? ["song_cover", "song"].forEach(a => formData.append("ref_code", a)) : ["song"].forEach(a => formData.append("ref_code", a))
 
     return NextResponse.json(
       await apiServer.post<SongEntity>(
