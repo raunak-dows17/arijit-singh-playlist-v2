@@ -63,7 +63,13 @@ export default function AudioPlayerFooter() {
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio || !currentPlaying) return;
-    }, [playing, currentPlaying]);
+
+        if (audio.paused) {
+            audio.play().catch((error) => error);
+        } else {
+            audio.pause();
+        }
+    }, [currentPlaying]);
 
     // Update volume
     useEffect(() => {
